@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barışalım mı?</title>
+    <style>
+        body {
+            background-color: #ffb6c1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            max-width: 90%;
+            z-index: 10;
+        }
+
+        .monkey-img {
+            max-width: 80%;
+            height: auto;
+            margin-bottom: 20px;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .sway {
+            animation: sway 2s infinite alternate;
+        }
+
+        @keyframes sway {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(5deg); }
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #options {
+            display: flex;
+            gap: 40px;
+            position: relative;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #yesBtn {
+            background-color: #4CAF50;
+            z-index: 10;
+        }
+
+        #noBtn {
+            background-color: #f44336;
+            position: relative;
+        }
+
+        #secondScreen {
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        #secondScreen.show {
+            opacity: 1;
+        }
+
+        #monkeyLove {
+            transform: scale(0.8);
+            transition: transform 1s ease;
+        }
+
+        #monkeyLove.show {
+            transform: scale(1);
+        }
+
+        #message {
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        #message.show {
+            opacity: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Kalp animasyonu */
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: #ff0000;
+            animation: floatUp 3s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-300px) scale(1.5); }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            .btn {
+                font-size: 1.2em;
+                padding: 12px 25px;
+            }
+            #message {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <div id="firstScreen">
+            <h1>BARIŞALIM MI?</h1>
+            <img id="monkeyInitial" class="monkey-img sway" src="https://i.ibb.co/yB0nzcPS/sevimli-tatl-k-k-bir-maymun.jpg" alt="Sevimli Maymun">
+            
+            <div id="options">
+                <button id="yesBtn" class="btn">EVET</button>
+                <button id="noBtn" class="btn">HAYIR</button>
+            </div>
+        </div>
+
+        <div id="secondScreen" class="hidden">
+            <img id="monkeyLove" class="monkey-img" src="https://i.ibb.co/TxZcspNW/sevimlii-tatl-k-k-bir-maymun-elinde-kalp-uzats-n.jpg" alt="Kalp Uzatan Maymun">
+            <p id="message">Seni Çok Seviyorum ❤</p>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const firstScreen = document.getElementById('firstScreen');
+        const secondScreen = document.getElementById('secondScreen');
+        const optionsContainer = document.getElementById('options');
+        const monkeyLove = document.getElementById('monkeyLove');
+        const message = document.getElementById('message');
+
+        // HAYIR butonunun hover hareketi
+        noBtn.addEventListener('mouseover', () => {
+            const containerRect = optionsContainer.getBoundingClientRect();
+            const noBtnRect = noBtn.getBoundingClientRect();
+
+            const newX = Math.random() * (containerRect.width - noBtnRect.width - 20);
+            const newY = Math.random() * 20 - 10;
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${newX}px`;
+            noBtn.style.top = `${newY}px`;
+        });
+
+        // EVET tıklandığında ikinci ekran ve kalpler
+        yesBtn.addEventListener('click', () => {
+            firstScreen.classList.add('hidden');
+            secondScreen.classList.remove('hidden');
+
+            setTimeout(() => {
+                secondScreen.classList.add('show');
+                monkeyLove.classList.add('show');
+                message.classList.add('show');
+            }, 50);
+
+            // Kalpleri oluştur
+            createHearts();
+            // Kalplerin sürekli çıkması
+            setInterval(createHearts, 500);
+        });
+
+        function createHearts() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerText = '❤';
+
+            const x = Math.random() * window.innerWidth - 20;
+            const y = window.innerHeight;
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+
+            document.body.appendChild(heart);
+
+            // 3s sonra kalbi DOM'dan kaldır
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
